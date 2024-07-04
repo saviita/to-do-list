@@ -1,0 +1,16 @@
+.header {
+    height: 300px;
+    background-image: url(../../assets/images/bg-desktop-light.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 3rem 1.5rem;
+
+    &__content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 330px;
+        margin-inline: auto;
+    }
+}
