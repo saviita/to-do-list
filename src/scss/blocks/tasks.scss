@@ -1,0 +1,31 @@
+@use '../mixins/hover.scss' as *;
+
+.task {
+    display: flex;
+    padding: 1rem 1.25rem;
+    background-color: var(--color-white);
+    border-bottom: 1px solid var(--color-check);
+
+    &__checkbox {
+        width: 20px;
+        height: 20px;
+    }
+
+    &__text {
+        padding-left: 2.5rem;
+        color: var(--text-normal);
+    }
+
+    &__cross {
+        background: none;
+        border: none;
+        margin-left: auto;
+    }
+
+    &:first-child {
+        border-radius: 5px 5px 0 0;
+    }
+
+    // @include hover {
+    // }
+}
