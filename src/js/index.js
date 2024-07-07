@@ -5,14 +5,15 @@ const inputTaskElement = document.getElementById("create");
 const formElement = document.getElementById("form");
 const containerTasksElement = document.getElementById("tasks");
 const filterNumberElement = document.getElementById("filter-number");
+const checkboxElement = document.getElementById("checkbox");
 
-let taskCounter = 0;
+let taskCounter = 1;
 
 const addTaskCounter = () => {
-  const checkboxElement = document.querySelectorAll(".checkbox");
-  console.log(checkboxElement);
-  taskCounter = checkboxElement.length;
+  // const taskElement = document.querySelectorAll(".task");
+  console.log(taskElement);
 
+  taskCounter++;
   filterNumberElement.textContent = `${taskCounter} items left`;
 };
 
@@ -26,6 +27,7 @@ const createTask = (event) => {
   const newCheckbox = document.createElement("input");
   newCheckbox.setAttribute("type", "checkbox");
   newCheckbox.classList.add("task__checkbox", "checkbox");
+  newCheckbox.id.add("checkbox");
 
   const newText = document.createElement("span");
   newText.textContent = taskValue;
@@ -38,8 +40,13 @@ const createTask = (event) => {
   newTask.append(newCheckbox, newText, newImg);
   containerTasksElement.append(newTask);
 
-  taskCounter();
+  addTaskCounter();
 };
 formElement.addEventListener("submit", createTask);
 
-const substractTaskCounter = (event) => {};
+const substractTaskCounter = (event) => {
+  if (taskCounter > 0) {
+    taskCounter--;
+  }
+};
+checkboxElement.addEventListener("input", substractTaskCounter);
