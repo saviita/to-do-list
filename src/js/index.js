@@ -15,6 +15,11 @@ const allTasks = [
   },
 ];
 
+const deleteTask = (id) => {
+  allTasks = allTasks.filter((task) => task.id !== id);
+  console.log(allTasks);
+};
+
 const insertTask = () => {
   const fragment = document.createDocumentFragment();
 
@@ -25,10 +30,14 @@ const insertTask = () => {
     const newCheckbox = document.createElement("input");
     newCheckbox.setAttribute("type", "checkbox");
     newCheckbox.classList.add("task__checkbox");
+    newCheckbox.id = task.id;
+    newCheckbox.checked = task.completed;
 
-    const newText = document.createElement("span");
+    const newText = document.createElement("label");
     newText.textContent = task.task;
+    newText.htmlFor = task.id;
     newText.classList.add("task__text");
+    console.log(task.task);
 
     const newImg = document.createElement("img");
     newImg.src = "./assets/images/icon-cross.svg";
@@ -38,11 +47,14 @@ const insertTask = () => {
     fragment.append(newTask);
   });
 
+  containerTasksElement.textContent = "";
   containerTasksElement.append(fragment);
 };
 
-const saveTask = (task) => {
-  allTtasks.push(task);
+insertTask();
+
+const saveTask = (newTask) => {
+  allTasks.push(newTask);
 
   insertTask();
 };
@@ -61,9 +73,9 @@ const createTask = (task) => {
 
 const getTask = (event) => {
   event.preventDefault();
+  const taskValue = inputTaskElement.value;
 
   if (!taskValue) return;
-  const taskValue = inputTaskElement.value;
   createTask(taskValue);
 
   event.target.reset();
