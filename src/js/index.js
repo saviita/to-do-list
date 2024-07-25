@@ -6,8 +6,11 @@ const formElement = document.getElementById("form");
 const containerTasksElement = document.getElementById("tasks");
 const filterNumberElement = document.getElementById("filter-number");
 const checkboxElement = document.getElementById("checkbox");
+const allFilter = document.querySelectorAll('.filter')
+const deleteCompletedElement = document.getElementById('filter-clear')
+const filtersElement = document.getElementById('filters')
 
-const allTasks = [
+let allTasks = [
   {
     id: Date.now(),
     task: "Comprar pan",
@@ -15,20 +18,42 @@ const allTasks = [
   },
 ];
 
-const deleteTask = (id) => {
-  allTasks = allTasks.filter((task) => task.id !== id);
-  console.log(allTasks);
-};
+const getFilteredTasks = () => {
+  const currentFilter = document.querySelector('.filter-active').dataset.filter
+  let filteredTasks = allTasks
 
-const insertTask = () => {
+  if (currentFilter === 'active') {
+    filteredTasks = filteredTasks.filter(task => !task.completed)
+    console.log('activo')
+  } else if (currentFilter === 'completed') {
+    filteredTasks = filteredTasks.filter(task => task.completed)
+    console.log('completado')
+  }
+
+  return filteredTasks
+}
+
+const countItemsLeft = () => {
+  const itemsLeft = allTasks.filter(task => !task.completed).length
+
+  if(allTasks.length === 0) {
+    filterNumberElement.textContent = 'No tasks'
+  } else if (itemsLeft === 0) {
+    filterNumberElement.textContent = 'All tasks completed'
+  } else {
+    filterNumberElement.textContent = `${itemsLeft} items left`
+  }
+}
+
+const insertTask = tasks => {
   const fragment = document.createDocumentFragment();
 
-  allTasks.forEach((task) => {
+  tasks.forEach((task) => {
     const newTask = document.createElement("div");
     newTask.classList.add("task");
 
     const newCheckbox = document.createElement("input");
-    newCheckbox.setAttribute("type", "checkbox");
+    newCheckbox.type = 'checkbox';
     newCheckbox.classList.add("task__checkbox");
     newCheckbox.id = task.id;
     newCheckbox.checked = task.completed;
@@ -37,47 +62,95 @@ const insertTask = () => {
     newText.textContent = task.task;
     newText.htmlFor = task.id;
     newText.classList.add("task__text");
-    console.log(task.task);
 
-    const newImg = document.createElement("img");
-    newImg.src = "./assets/images/icon-cross.svg";
-    newImg.classList.add("task__cross");
+    const newDelete = document.createElement("img");
+    newDelete.src = "./assets/images/icon-cross.svg";
+    newDelete.classList.add("task__cross");
 
-    newTask.append(newCheckbox, newText, newImg);
+    newCheckbox.addEventListener('change', () => completeTask(task.id))
+
+    newDelete.addEventListener('click', () => deleteTask(task.id))
+
+    newTask.append(newCheckbox, newText, newDelete);
     fragment.append(newTask);
+    countItemsLeft();
   });
 
   containerTasksElement.textContent = "";
   containerTasksElement.append(fragment);
+  countItemsLeft()
 };
 
-insertTask();
+const completeTask = id => {
+  allTasks = allTasks.map(task => {
+    if(task.id === id) {
+      task.completed = !task.completed
+    }
+    return task
+  })
+
+  const filteredTasks = getFilteredTasks()
+  insertTask(filteredTasks)
+}
 
 const saveTask = (newTask) => {
   allTasks.push(newTask);
+  const tasksToRender = getFilteredTasks()
+  insertTask(tasksToRender);
+};
 
-  insertTask();
+const deleteTask = (id) => {
+  allTasks = allTasks.filter((task) => task.id !== id);
+  insertTask(allTasks)
 };
 
 const createTask = (task) => {
-  const newTask = [
-    {
+  const newTask = {
       id: Date.now(),
       task: task,
       completed: false,
-    },
-  ];
+    };
 
   saveTask(newTask);
 };
 
+const changeFilter = filterTarget => {
+  allFilter.forEach(filter => {
+    filter.classList.remove('filter-active')
+    console.log('quitando clase')
+  })
+
+  filterTarget.classList.add('filter-active')
+}
+
+const filterTasks = filterTarget => {
+  changeFilter(filterTarget)
+
+  const filteredTasks = getFilteredTasks(filterTarget)
+  insertTask(filteredTasks)
+}
+
+const deleteAllCompleteTasks = () => {
+  allTasks = allTasks.filter(task => !task.completed)
+  insertTask(allTasks)
+}
+
+insertTask(allTasks)
+
 const getTask = (event) => {
   event.preventDefault();
-  const taskValue = inputTaskElement.value;
-
-  if (!taskValue) return;
-  createTask(taskValue);
+  if(!event.target.task.value) return
+  //if (!taskValue) return; IGUAL
+  createTask(event.target.task.value);
+  // createTask(taskValue);
 
   event.target.reset();
 };
 formElement.addEventListener("submit", getTask);
+
+deleteCompletedElement.addEventListener('click', deleteAllCompleteTasks)
+
+filtersElement.addEventListener('click', event => {
+  if (!event.target.dataset.filter) return;
+  filterTasks(event.target)
+})

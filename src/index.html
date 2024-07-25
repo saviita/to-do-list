@@ -22,7 +22,7 @@
     <main class="main">
       <div class="create">
         <form id="form" class="create__form">
-          <input class="create__input" type="text" name="create" id="create" placeholder="Create a new todo">
+          <input class="create__input" type="text" name="task" id="task" placeholder="Create a new todo">
         </form>
 
         <div id="tasks" class="tasks">
@@ -31,9 +31,11 @@
 
         <div class="filter">
           <span id="filter-number" class="filter__number">No tasks</span>
-          <span id="filter-all" class="filter__all">All</span>
-          <span id="filter-active" class="filter__active filter-active">Active</span>
-          <span id="filter-completed" class="filter__completed">Completed</span>            
+          <div id="filters" class="filter__div">
+            <button data-filter="all" class="filter__all filter filter-active">All</button>
+            <button data-filter="active" class="filter__active filter">Active</button>
+            <button data-filter="completed" class="filter__completed filter">Completed</button>           
+          </div>
           <span id="filter-clear" class="filter__clear">Clear completed</span>
         </div>
 
